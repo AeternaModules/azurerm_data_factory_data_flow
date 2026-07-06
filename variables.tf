@@ -139,5 +139,45 @@ EOT
       name = string
     }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.script == null || (length(v.script) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.script_lines == null || (length(v.script_lines) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.description == null || (length(v.description) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.folder == null || (length(v.folder) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  # --- Unconfirmed validation candidates, derived from azurerm_data_factory_data_flow's provider source ---
+  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
+  # or a path that crosses a list-typed block (needs its own for_each wrapping).
+  # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: data_factory_id
+  #   source:    [from factories.ValidateFactoryID] !ok
+  # path: data_factory_id
+  #   source:    [from factories.ValidateFactoryID] err != nil
 }
 
