@@ -1,3 +1,7 @@
+output "data_factory_data_flows_id" {
+  description = "Map of id values across all data_factory_data_flows, keyed the same as var.data_factory_data_flows"
+  value       = { for k, v in azurerm_data_factory_data_flow.data_factory_data_flows : k => v.id }
+}
 output "data_factory_data_flows_annotations" {
   description = "Map of annotations values across all data_factory_data_flows, keyed the same as var.data_factory_data_flows"
   value       = { for k, v in azurerm_data_factory_data_flow.data_factory_data_flows : k => v.annotations }
