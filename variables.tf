@@ -71,7 +71,7 @@ EOT
     folder          = optional(string)
     script          = optional(string)
     script_lines    = optional(list(string))
-    sink = object({
+    sink = list(object({
       dataset = optional(object({
         name       = string
         parameters = optional(map(string))
@@ -95,82 +95,50 @@ EOT
         name       = string
         parameters = optional(map(string))
       }))
-    })
-    source = object({
-      dataset = optional(object({
-        name       = string
-        parameters = optional(map(string))
-      }))
-      description = optional(string)
-      flowlet = optional(object({
-        dataset_parameters = optional(string)
-        name               = string
-        parameters         = optional(map(string))
-      }))
-      linked_service = optional(object({
-        name       = string
-        parameters = optional(map(string))
-      }))
-      name = string
-      rejected_linked_service = optional(object({
-        name       = string
-        parameters = optional(map(string))
-      }))
-      schema_linked_service = optional(object({
-        name       = string
-        parameters = optional(map(string))
-      }))
-    })
-    transformation = optional(object({
-      dataset = optional(object({
-        name       = string
-        parameters = optional(map(string))
-      }))
-      description = optional(string)
-      flowlet = optional(object({
-        dataset_parameters = optional(string)
-        name               = string
-        parameters         = optional(map(string))
-      }))
-      linked_service = optional(object({
-        name       = string
-        parameters = optional(map(string))
-      }))
-      name = string
     }))
+    source = list(object({
+      dataset = optional(object({
+        name       = string
+        parameters = optional(map(string))
+      }))
+      description = optional(string)
+      flowlet = optional(object({
+        dataset_parameters = optional(string)
+        name               = string
+        parameters         = optional(map(string))
+      }))
+      linked_service = optional(object({
+        name       = string
+        parameters = optional(map(string))
+      }))
+      name = string
+      rejected_linked_service = optional(object({
+        name       = string
+        parameters = optional(map(string))
+      }))
+      schema_linked_service = optional(object({
+        name       = string
+        parameters = optional(map(string))
+      }))
+    }))
+    transformation = optional(list(object({
+      dataset = optional(object({
+        name       = string
+        parameters = optional(map(string))
+      }))
+      description = optional(string)
+      flowlet = optional(object({
+        dataset_parameters = optional(string)
+        name               = string
+        parameters         = optional(map(string))
+      }))
+      linked_service = optional(object({
+        name       = string
+        parameters = optional(map(string))
+      }))
+      name = string
+    })))
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.data_factory_data_flows : (
-        v.script == null || (length(v.script) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.data_factory_data_flows : (
-        v.script_lines == null || (length(v.script_lines) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.data_factory_data_flows : (
-        v.description == null || (length(v.description) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.data_factory_data_flows : (
-        v.folder == null || (length(v.folder) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_data_factory_data_flow's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -179,5 +147,17 @@ EOT
   #   source:    [from factories.ValidateFactoryID] !ok
   # path: data_factory_id
   #   source:    [from factories.ValidateFactoryID] err != nil
+  # path: script
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: script_lines[*]
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: description
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: folder
+  #   condition: length(value) > 0
+  #   message:   must not be empty
 }
 
