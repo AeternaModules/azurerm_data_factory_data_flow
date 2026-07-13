@@ -155,91 +155,214 @@ EOT
     ])
     error_message = "Each source list must contain at least 1 items"
   }
-  # --- Unconfirmed validation candidates, derived from azurerm_data_factory_data_flow's provider source ---
-  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
-  # or a path that crosses a list-typed block (needs its own for_each wrapping).
-  # Review, translate into a real validation{} block above, and delete once confirmed.
-  # path: data_factory_id
-  #   source:    [from factories.ValidateFactoryID] !ok
-  # path: data_factory_id
-  #   source:    [from factories.ValidateFactoryID] err != nil
-  # path: script
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: script_lines[*]
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: source.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: source.description
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: source.dataset.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: source.flowlet.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: source.flowlet.dataset_parameters
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: source.linked_service.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: source.rejected_linked_service.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: source.schema_linked_service.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: sink.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: sink.description
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: sink.dataset.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: sink.flowlet.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: sink.flowlet.dataset_parameters
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: sink.linked_service.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: sink.rejected_linked_service.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: sink.schema_linked_service.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: transformation.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: transformation.description
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: transformation.dataset.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: transformation.flowlet.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: transformation.flowlet.dataset_parameters
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: transformation.linked_service.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: description
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: folder
-  #   condition: length(value) > 0
-  #   message:   must not be empty
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.script == null || (length(v.script) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.script_lines == null || (alltrue([for x in v.script_lines : length(x) > 0]))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.source : (length(item.name) > 0)])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.source : (item.description == null || (length(item.description) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.source : (item.dataset == null || (length(item.dataset.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.source : (item.flowlet == null || (length(item.flowlet.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.source : (item.flowlet == null || (item.flowlet.dataset_parameters == null || (length(item.flowlet.dataset_parameters) > 0)))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.source : (item.linked_service == null || (length(item.linked_service.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.source : (item.rejected_linked_service == null || (length(item.rejected_linked_service.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.source : (item.schema_linked_service == null || (length(item.schema_linked_service.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.sink : (length(item.name) > 0)])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.sink : (item.description == null || (length(item.description) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.sink : (item.dataset == null || (length(item.dataset.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.sink : (item.flowlet == null || (length(item.flowlet.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.sink : (item.flowlet == null || (item.flowlet.dataset_parameters == null || (length(item.flowlet.dataset_parameters) > 0)))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.sink : (item.linked_service == null || (length(item.linked_service.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.sink : (item.rejected_linked_service == null || (length(item.rejected_linked_service.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        alltrue([for item in v.sink : (item.schema_linked_service == null || (length(item.schema_linked_service.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.transformation == null || alltrue([for item in v.transformation : (length(item.name) > 0)])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.transformation == null || alltrue([for item in v.transformation : (item.description == null || (length(item.description) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.transformation == null || alltrue([for item in v.transformation : (item.dataset == null || (length(item.dataset.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.transformation == null || alltrue([for item in v.transformation : (item.flowlet == null || (length(item.flowlet.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.transformation == null || alltrue([for item in v.transformation : (item.flowlet == null || (item.flowlet.dataset_parameters == null || (length(item.flowlet.dataset_parameters) > 0)))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.transformation == null || alltrue([for item in v.transformation : (item.linked_service == null || (length(item.linked_service.name) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.description == null || (length(v.description) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        v.folder == null || (length(v.folder) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  # Note: 2 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
 }
 
