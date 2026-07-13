@@ -139,6 +139,22 @@ EOT
       name = string
     })))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        length(v.sink) >= 1
+      )
+    ])
+    error_message = "Each sink list must contain at least 1 items"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_data_flows : (
+        length(v.source) >= 1
+      )
+    ])
+    error_message = "Each source list must contain at least 1 items"
+  }
   # --- Unconfirmed validation candidates, derived from azurerm_data_factory_data_flow's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -151,6 +167,72 @@ EOT
   #   condition: length(value) > 0
   #   message:   must not be empty
   # path: script_lines[*]
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source.description
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source.dataset.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source.flowlet.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source.flowlet.dataset_parameters
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source.linked_service.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source.rejected_linked_service.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source.schema_linked_service.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: sink.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: sink.description
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: sink.dataset.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: sink.flowlet.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: sink.flowlet.dataset_parameters
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: sink.linked_service.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: sink.rejected_linked_service.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: sink.schema_linked_service.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: transformation.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: transformation.description
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: transformation.dataset.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: transformation.flowlet.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: transformation.flowlet.dataset_parameters
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: transformation.linked_service.name
   #   condition: length(value) > 0
   #   message:   must not be empty
   # path: description
